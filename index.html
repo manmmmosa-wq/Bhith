@@ -257,8 +257,11 @@
     <label>سعر الباقة (ل.س):</label>
     <input type="number" id="setting-price">
     
-    <label>مفتاح Gemini API:</label>
-    <input type="password" id="setting-api-key" dir="ltr" placeholder="AIzaSy...">
+    <label>مفتاح Groq API (مجاني):</label>
+    <input type="password" id="setting-api-key" dir="ltr" placeholder="gsk_...">
+    
+    <label>النموذج:</label>
+    <input type="text" id="setting-model" dir="ltr" placeholder="llama-3.3-70b-versatile">
     
     <div class="modal-buttons">
       <button class="btn btn-primary" onclick="saveAdminSettings()">حفظ</button>
@@ -278,7 +281,7 @@ function getDB() {
         { id: 'admin_1', name: 'المدير', email: 'admin@albahith.com', password: '123456', role: 'admin', status: 'active', txId: null, dailyCount: 0, lastChatDate: '' }
       ],
       chats: [],
-      settings: { shamCash: '0912345678', price: 1000, apiKey: '' }
+      settings: { shamCash: '0912345678', price: 1000, apiKey: '', model: 'llama-3.3-70b-versatile' }
     };
     localStorage.setItem(DB_KEY, JSON.stringify(initialData));
     return initialData;
@@ -464,20 +467,40 @@ document.getElementById('send-btn').addEventListener('click', async () => {
   msgs.innerHTML += `<div class="msg assistant" id="typing"><div class="msg-avatar">🔍</div><div class="msg-content">جاري البحث...</div></div>`;
   msgs.scrollTop = msgs.scrollHeight;
 
-  let reply = 'يرجى تفعيل مفتاح API من إعدادات الإدارة.';
+  let reply = 'يرجى تفعيل مفتاح Groq API من إعدادات الإدارة.';
   if (appSettings.apiKey) {
     try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${appSettings.apiKey}`, {
-        method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ contents: [{ parts: [{ text }] }] })
+      const model = appSettings.model || 'llama-3.3-70b-versatile';
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${appSettings.apiKey}`
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            {
+              role: 'system',
+              content: 'أنت الباحث، مساعد ذكاء اصطناعي عربي مفيد ودقيق. أجب بالعربية الفصحى الواضحة ما لم يطلب المستخدم لغة أخرى. كن مختصراً ومفيداً.'
+            },
+            { role: 'user', content: text }
+          ],
+          temperature: 0.7,
+          max_tokens: 2048
+        })
       });
       const json = await res.json();
-      if (json.candidates && json.candidates[0].content) {
-        reply = json.candidates[0].content.parts[0].text;
+      if (json.choices && json.choices[0] && json.choices[0].message) {
+        reply = json.choices[0].message.content;
+      } else if (json.error) {
+        reply = 'خطأ من Groq: ' + (json.error.message || JSON.stringify(json.error));
       } else {
-        reply = 'خطأ في الرد من الذكاء الاصطناعي. تأكد من صحة المفتاح.';
+        reply = 'خطأ في الرد من الذكاء الاصطناعي. تأكد من صحة المفتاح والنموذج.';
       }
-    } catch (e) { reply = 'حدث خطأ في الاتصال.'; }
+    } catch (e) {
+      reply = 'حدث خطأ في الاتصال. تحقق من الإنترنت أو جرّب لاحقاً.';
+    }
   }
 
   document.getElementById('typing').remove();
@@ -584,6 +607,7 @@ function openAdminSettings() {
   document.getElementById('setting-sham-cash').value = appSettings.shamCash;
   document.getElementById('setting-price').value = appSettings.price;
   document.getElementById('setting-api-key').value = appSettings.apiKey || '';
+  document.getElementById('setting-model').value = appSettings.model || 'llama-3.3-70b-versatile';
   document.getElementById('admin-settings-modal').classList.remove('hidden');
 }
 
@@ -592,6 +616,7 @@ function saveAdminSettings() {
   appSettings.shamCash = document.getElementById('setting-sham-cash').value;
   appSettings.price = document.getElementById('setting-price').value;
   appSettings.apiKey = document.getElementById('setting-api-key').value;
+  appSettings.model = document.getElementById('setting-model').value.trim() || 'llama-3.3-70b-versatile';
   db.settings = appSettings;
   saveDB(db);
   document.getElementById('admin-settings-modal').classList.add('hidden');
