@@ -4,129 +4,135 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>الباحث - منصة الذكاء الاصطناعي</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-  /* ================= المتغيرات والألوان ================= */
+  /* ================= المتغيرات (اللون الأزرق) ================= */
   :root {
-    --bg: #F9F9F8; --sidebar: #F3F2EE; --surface: #FFFFFF;
-    --text: #1F1F1F; --muted: #6B6B6B; --border: #E5E5E3;
-    --accent: #C15F3C; --accent-hover: #A54E2F;
-    --user-bubble: #F0EEE6; --radius: 12px;
-    --font-sans: 'IBM Plex Sans Arabic', system-ui, sans-serif;
-    
-    --admin-bg: #0F172A; --admin-surface: #1E293B; --admin-border: #334155;
-    --admin-text: #F8FAFC; --admin-muted: #94A3B8; --admin-primary: #3B82F6;
-    --admin-success: #10B981; --admin-danger: #EF4444;
+    --primary: #2563EB;       /* أزرق احترافي */
+    --primary-hover: #1D4ED8;
+    --bg: #F8FAFC;            /* خلفية زرقاء فاتحة جداً */
+    --surface: #FFFFFF;
+    --text: #0F172A;
+    --text-muted: #64748B;
+    --border: #E2E8F0;
+    --success: #10B981;
+    --danger: #EF4444;
+    --warning: #F59E0B;
+    --font: 'Tajawal', sans-serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { 
-    font-family: var(--font-sans); background: var(--bg); color: var(--text); 
-    height: 100vh; height: 100dvh; overflow: hidden; 
-  }
+  body { font-family: var(--font); background: var(--bg); color: var(--text); height: 100vh; height: 100dvh; overflow: hidden; }
   button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; transition: 0.2s; }
   input, textarea { font-family: inherit; }
   .hidden { display: none !important; }
 
-  .btn { padding: 12px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
-  .btn-primary { background: var(--accent); color: white; }
+  /* ================= الأزرار العامة ================= */
+  .btn { padding: 12px 16px; border-radius: 10px; font-weight: 700; font-size: 15px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+  .btn-primary { background: var(--primary); color: white; }
   .btn-primary:active { transform: scale(0.98); }
-  .btn-outline { border: 1px solid var(--border); background: var(--surface); }
-  .btn-success { background: #10B981; color: white; }
-  
-  /* زر الخروج العلوي */
-  .logout-btn-top {
-    background: #FEE2E2; color: #EF4444; padding: 6px 12px; border-radius: 20px;
-    font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 4px;
-    border: 1px solid #FECACA;
-  }
+  .btn-outline { border: 1px solid var(--border); background: var(--surface); color: var(--text); }
 
   /* ================= شاشة الدخول ================= */
   #view-auth { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 20px; background: var(--bg); }
-  .auth-card { background: var(--surface); padding: 32px 24px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); width: 100%; max-width: 400px; border: 1px solid var(--border); }
-  .auth-logo { font-size: 48px; text-align: center; margin-bottom: 12px; }
-  .auth-title { font-family: var(--font-sans); font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 24px; }
-  .form-group { margin-bottom: 16px; text-align: right; }
-  .form-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
-  input { width: 100%; padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 16px; outline: none; }
-  input:focus { border-color: var(--accent); }
-  .auth-toggle { margin-top: 16px; text-align: center; font-size: 14px; color: var(--muted); }
-  .auth-toggle span { color: var(--accent); cursor: pointer; font-weight: 600; }
+  .auth-card { background: var(--surface); padding: 32px 24px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); width: 100%; max-width: 400px; border: 1px solid var(--border); }
   
-  .setup-btn { margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--border); }
-  .setup-btn button { font-size: 12px; color: var(--muted); text-decoration: underline; background: none; border: none; width: 100%; text-align: center; }
+  /* شعار الشخص الذي يبحث (SVG) */
+  .logo-svg { width: 64px; height: 64px; margin: 0 auto 16px; display: block; color: var(--primary); }
+  
+  .auth-title { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 8px; }
+  .auth-subtitle { text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+  
+  .form-group { margin-bottom: 16px; text-align: right; }
+  .form-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: 700; color: var(--text-muted); }
+  input { width: 100%; padding: 14px 16px; border: 2px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 16px; outline: none; transition: 0.2s; }
+  input:focus { border-color: var(--primary); background: var(--surface); }
+  
+  .auth-toggle { margin-top: 20px; text-align: center; font-size: 14px; color: var(--text-muted); font-weight: 500; }
+  .auth-toggle span { color: var(--primary); cursor: pointer; font-weight: 700; }
 
   /* ================= واجهة المحادثة ================= */
   .chat-layout { display: flex; height: 100%; position: relative; overflow: hidden; }
   
-  .sidebar { width: 280px; background: var(--surface); border-left: 1px solid var(--border); display: flex; flex-direction: column; position: absolute; top: 0; bottom: 0; right: -100%; z-index: 100; transition: right 0.3s ease; box-shadow: -4px 0 15px rgba(0,0,0,0.1); }
+  /* القائمة الجانبية */
+  .sidebar { width: 280px; background: var(--surface); border-left: 1px solid var(--border); display: flex; flex-direction: column; position: absolute; top: 0; bottom: 0; right: -100%; z-index: 100; transition: right 0.3s ease; box-shadow: -5px 0 20px rgba(0,0,0,0.05); }
   .sidebar.open { right: 0; }
   .sidebar-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-  .sidebar-menu { padding: 12px; display: flex; flex-direction: column; gap: 4px; }
-  .menu-item { padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 500; text-align: right; display: flex; align-items: center; gap: 10px; }
-  .menu-item:active { background: rgba(0,0,0,0.05); }
-  .chat-history { flex: 1; overflow-y: auto; padding: 12px; }
-  .history-item { padding: 12px; font-size: 14px; color: var(--muted); border-radius: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; border: 1px solid transparent; }
-  .history-item.active { background: var(--bg); border-color: var(--border); color: var(--text); font-weight: 600; }
+  .sidebar-menu { padding: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .menu-item { padding: 12px 16px; border-radius: 8px; font-size: 14px; font-weight: 700; text-align: right; display: flex; align-items: center; gap: 10px; color: var(--text); }
+  .menu-item:active { background: var(--bg); }
   
+  .chat-history { flex: 1; overflow-y: auto; padding: 12px; }
+  .history-item { padding: 12px; font-size: 14px; color: var(--text-muted); border-radius: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; border: 1px solid transparent; font-weight: 500; }
+  .history-item.active { background: #EFF6FF; border-color: #BFDBFE; color: var(--primary); font-weight: 700; }
+  
+  /* منطقة المحادثة */
   .main-chat { flex: 1; display: flex; flex-direction: column; background: var(--bg); width: 100%; height: 100%; }
   .chat-header { padding: 12px 16px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 10; }
-  
   .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; padding-bottom: 20px; }
+  
   .msg { display: flex; gap: 12px; max-width: 90%; }
-  .msg-avatar { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--user-bubble); flex-shrink: 0; font-size: 12px; }
-  .msg.assistant .msg-avatar { background: var(--accent); color: white; }
-  .msg-content { background: var(--surface); padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); font-size: 15px; line-height: 1.6; overflow-x: auto; }
+  .msg-avatar { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--border); flex-shrink: 0; font-weight: bold; }
+  .msg.assistant .msg-avatar { background: #DBEAFE; color: var(--primary); }
+  .msg-content { background: var(--surface); padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border); font-size: 15px; line-height: 1.6; overflow-x: auto; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
   .msg.user { align-self: flex-start; flex-direction: row-reverse; }
-  .msg.user .msg-content { background: var(--accent); color: white; border: none; }
-  .msg.user .msg-avatar { background: #E4DFD5; color: #4a4a4a; }
+  .msg.user .msg-content { background: var(--primary); color: white; border: none; }
+  .msg.user .msg-avatar { background: var(--primary-hover); color: white; }
   .msg.assistant { align-self: flex-end; }
   
+  /* تنسيق Markdown */
   .markdown-body p { margin-bottom: 8px; }
-  .markdown-body pre { background: #1E1E1E; color: #FFF; padding: 12px; border-radius: 8px; direction: ltr; text-align: left; overflow-x: auto; margin: 8px 0; font-size: 13px; }
-  
+  .markdown-body pre { background: #1E293B; color: #F8FAFC; padding: 12px; border-radius: 8px; direction: ltr; text-align: left; overflow-x: auto; margin: 8px 0; font-size: 13px; }
+  .markdown-body code { background: #F1F5F9; padding: 2px 6px; border-radius: 4px; color: var(--primary); direction: ltr; display: inline-block; }
+
+  /* مربع الإدخال */
   .chat-input-area { padding: 12px 16px; background: var(--surface); border-top: 1px solid var(--border); padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
-  .input-wrapper { display: flex; gap: 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 24px; padding: 6px 12px; align-items: flex-end; }
+  .input-wrapper { display: flex; gap: 8px; background: var(--bg); border: 2px solid var(--border); border-radius: 24px; padding: 6px 12px; align-items: flex-end; transition: 0.2s; }
+  .input-wrapper:focus-within { border-color: var(--primary); background: var(--surface); }
   .input-wrapper textarea { flex: 1; border: none; background: transparent; resize: none; outline: none; padding: 8px 0; max-height: 100px; font-size: 15px; }
-  .input-wrapper button { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: white; display: grid; place-items: center; flex-shrink: 0; }
+  .input-wrapper button { width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: white; display: grid; place-items: center; flex-shrink: 0; }
   
   .backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.4); z-index: 90; display: none; backdrop-filter: blur(2px); }
   .backdrop.show { display: block; }
 
+  /* زر الخروج */
+  .logout-btn { background: #FEE2E2; color: #EF4444; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 4px; border: 1px solid #FECACA; }
+
   /* ================= لوحة الإدارة ================= */
-  #view-admin { height: 100%; display: flex; flex-direction: column; background: var(--admin-bg); color: var(--admin-text); overflow: hidden; }
-  .admin-header { padding: 16px 20px; background: var(--admin-surface); border-bottom: 1px solid var(--admin-border); display: flex; justify-content: space-between; align-items: center; }
+  #view-admin { height: 100%; display: flex; flex-direction: column; background: #0F172A; color: white; overflow: hidden; }
+  .admin-header { padding: 16px 20px; background: #1E293B; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
   .admin-content { flex: 1; overflow-y: auto; padding: 20px; }
   
   .kpi-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 20px; }
-  .kpi-card { background: var(--admin-surface); padding: 20px; border-radius: 12px; border: 1px solid var(--admin-border); display: flex; justify-content: space-between; align-items: center; }
-  .kpi-value { font-size: 24px; font-weight: 700; }
+  .kpi-card { background: #1E293B; padding: 20px; border-radius: 12px; border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+  .kpi-value { font-size: 24px; font-weight: 700; color: #60A5FA; }
   
-  .table-card { background: var(--admin-surface); border-radius: 12px; border: 1px solid var(--admin-border); overflow: hidden; margin-bottom: 20px; }
-  .table-header { padding: 16px; display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid var(--admin-border); }
-  .table-header input { background: var(--admin-bg); border: 1px solid var(--admin-border); color: white; padding: 10px; border-radius: 8px; }
+  .table-card { background: #1E293B; border-radius: 12px; border: 1px solid #334155; overflow: hidden; margin-bottom: 20px; }
+  .table-header { padding: 16px; border-bottom: 1px solid #334155; }
+  .table-header input { background: #0F172A; border: 1px solid #334155; color: white; }
   .table-wrap { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; text-align: right; min-width: 600px; }
-  th, td { padding: 12px 16px; border-bottom: 1px solid var(--admin-border); font-size: 13px; }
-  th { background: rgba(0,0,0,0.2); color: var(--admin-muted); }
+  th, td { padding: 12px 16px; border-bottom: 1px solid #334155; font-size: 13px; }
+  th { background: rgba(0,0,0,0.2); color: #94A3B8; font-weight: 500; }
   
-  .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+  .status-badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; }
   .status-active { background: rgba(16, 185, 129, 0.2); color: #34D399; }
   .status-pending { background: rgba(245, 158, 11, 0.2); color: #FBBF24; }
+  .status-inactive { background: rgba(148, 163, 184, 0.2); color: #94A3B8; }
   
   .admin-actions { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-  .admin-actions button { padding: 8px 12px; font-size: 13px; border-radius: 8px; }
-  .btn-tab { background: var(--admin-surface); color: var(--admin-muted); border: 1px solid var(--admin-border); }
-  .btn-tab.active { background: var(--admin-primary); color: white; border-color: var(--admin-primary); }
+  .admin-actions button { padding: 8px 12px; font-size: 13px; border-radius: 8px; font-weight: bold; }
+  .btn-tab { background: #1E293B; color: #94A3B8; border: 1px solid #334155; }
+  .btn-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
 
   /* المودالات */
-  .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; backdrop-filter: blur(2px); }
-  .modal-content { background: var(--surface); padding: 24px; border-radius: 16px; width: 100%; max-width: 400px; }
-  .admin-modal-content { background: var(--admin-surface); border: 1px solid var(--admin-border); padding: 24px; border-radius: 16px; width: 100%; max-width: 400px; color: white; }
-  .admin-modal-content input { background: var(--admin-bg); border: 1px solid var(--admin-border); color: white; margin-bottom: 12px; }
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; backdrop-filter: blur(4px); }
+  .modal-content { background: var(--surface); padding: 24px; border-radius: 16px; width: 100%; max-width: 400px; color: var(--text); }
+  .admin-modal-content { background: #1E293B; border: 1px solid #334155; padding: 24px; border-radius: 16px; width: 100%; max-width: 400px; color: white; }
+  .admin-modal-content input { background: #0F172A; border: 1px solid #334155; color: white; margin-bottom: 12px; }
   
+  /* الإشعارات */
   .toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; width: 90%; max-width: 400px; }
   .toast { background: #1E293B; color: white; padding: 12px 16px; border-radius: 8px; font-weight: 500; box-shadow: 0 4px 12px rgba(0,0,0,0.15); text-align: center; font-size: 14px; }
 </style>
@@ -138,20 +144,36 @@
 <!-- 1. شاشة الدخول -->
 <div id="view-auth">
   <div class="auth-card">
-    <div class="auth-logo">📖</div>
+    
+    <!-- الشعار الجديد: شخص يبحث -->
+    <svg class="logo-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="10" cy="10" r="7"></circle>
+      <line x1="21" y1="21" x2="15" y2="15"></line>
+      <path d="M10 7a3 3 0 0 0-3 3c0 2 3 3 3 3s3-1 3-3a3 3 0 0 0-3-3z"></path>
+    </svg>
+
     <div class="auth-title" id="auth-title">مرحباً بك في الباحث</div>
+    <div class="auth-subtitle" id="auth-subtitle">سجل دخولك للمتابعة</div>
+    
     <form id="auth-form">
-      <div class="form-group hidden" id="name-group"><label>الاسم الكامل</label><input type="text" id="auth-name" placeholder="أدخل اسمك"></div>
-      <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="auth-email" required dir="ltr" placeholder="example@mail.com"></div>
-      <div class="form-group"><label>كلمة المرور</label><input type="password" id="auth-password" required dir="ltr" placeholder="••••••••"></div>
+      <div class="form-group hidden" id="name-group">
+        <label>الاسم الكامل</label>
+        <input type="text" id="auth-name" placeholder="أدخل اسمك">
+      </div>
+      <div class="form-group">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="auth-email" required dir="ltr" placeholder="example@mail.com">
+      </div>
+      <div class="form-group">
+        <label>كلمة المرور</label>
+        <input type="password" id="auth-password" required dir="ltr" placeholder="••••••••">
+      </div>
       <button type="submit" class="btn btn-primary" id="auth-submit-btn">دخول</button>
     </form>
+    
     <div class="auth-toggle">
       <span id="auth-toggle-text">ليس لديك حساب؟</span> 
       <span id="auth-toggle-btn">سجل الآن</span>
-    </div>
-    <div class="setup-btn">
-      <button onclick="autoSetupAdmin()" id="setup-btn-text">⚙️ تهيئة النظام (إنشاء حساب مدير)</button>
     </div>
   </div>
 </div>
@@ -163,13 +185,13 @@
     
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <div style="font-weight:700; font-size:18px;">✽ الباحث</div>
+        <div style="font-weight:700; font-size:18px; color:var(--primary);">🔍 الباحث</div>
         <button onclick="toggleSidebar()" style="font-size:20px;">✕</button>
       </div>
       <div class="sidebar-menu">
         <button class="btn btn-primary" onclick="startNewChat()" style="margin-bottom:8px;">+ محادثة جديدة</button>
         <button class="menu-item" onclick="openPricing()">💳 باقة الاشتراك</button>
-        <button class="menu-item" onclick="openAdminPanel()" id="admin-nav-btn" style="display:none; color:var(--accent);">👑 لوحة الإدارة</button>
+        <button class="menu-item" onclick="openAdminPanel()" id="admin-nav-btn" style="display:none; color:var(--primary);">👑 لوحة الإدارة</button>
       </div>
       <div class="chat-history" id="chat-history-list"></div>
     </aside>
@@ -178,11 +200,11 @@
       <header class="chat-header">
         <div style="display:flex; align-items:center; gap:8px;">
           <button onclick="toggleSidebar()" style="font-size:24px;">☰</button>
-          <span id="chat-title-display" style="font-weight:600; font-size:14px;">محادثة جديدة</span>
+          <span id="chat-title-display" style="font-weight:700; font-size:14px;">محادثة جديدة</span>
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
           <span id="user-status-header" style="font-size:12px; font-weight:bold;"></span>
-          <button class="logout-btn-top" onclick="logout()">🚪 خروج</button>
+          <button class="logout-btn" onclick="logout()">🚪 خروج</button>
         </div>
       </header>
       
@@ -204,7 +226,7 @@
     <div style="font-weight:700;">👑 مركز القيادة</div>
     <div style="display:flex; gap:10px;">
       <button class="btn-tab" onclick="openUserView()" style="padding:6px 12px;">💬 المحادثة</button>
-      <button class="logout-btn-top" onclick="logout()">🚪 خروج</button>
+      <button class="logout-btn" onclick="logout()">🚪 خروج</button>
     </div>
   </header>
   <div class="admin-content">
@@ -217,12 +239,9 @@
     <!-- تبويب الإحصائيات -->
     <div id="admin-tab-dashboard">
       <div class="kpi-grid">
-        <div class="kpi-card"><div><div style="color:var(--admin-muted); font-size:12px;">إجمالي المستخدمين</div><div class="kpi-value" id="kpi-total">0</div></div><div style="font-size:24px;">👥</div></div>
-        <div class="kpi-card"><div><div style="color:var(--admin-muted); font-size:12px;">المشتركون النشطون</div><div class="kpi-value" id="kpi-active">0</div></div><div style="font-size:24px;">✅</div></div>
-        <div class="kpi-card"><div><div style="color:var(--admin-muted); font-size:12px;">الإيرادات (ل.س)</div><div class="kpi-value" id="kpi-revenue">0</div></div><div style="font-size:24px;">💰</div></div>
-      </div>
-      <div style="background:var(--admin-surface); padding:16px; border-radius:12px; border:1px solid var(--admin-border);">
-        <canvas id="revenueChart" height="150"></canvas>
+        <div class="kpi-card"><div><div style="color:#94A3B8; font-size:12px;">إجمالي المستخدمين</div><div class="kpi-value" id="kpi-total">0</div></div><div style="font-size:24px;">👥</div></div>
+        <div class="kpi-card"><div><div style="color:#94A3B8; font-size:12px;">المشتركون النشطون</div><div class="kpi-value" id="kpi-active">0</div></div><div style="font-size:24px;">✅</div></div>
+        <div class="kpi-card"><div><div style="color:#94A3B8; font-size:12px;">الإيرادات (ل.س)</div><div class="kpi-value" id="kpi-revenue">0</div></div><div style="font-size:24px;">💰</div></div>
       </div>
     </div>
 
@@ -246,9 +265,9 @@
 <!-- نافذة الدفع -->
 <div id="payment-modal" class="modal hidden">
   <div class="modal-content" style="text-align:center;">
-    <h3 style="margin-bottom:12px;">الدفع عبر شام كاش</h3>
-    <p style="font-size:13px; color:var(--muted); margin-bottom:16px;">حول المبلغ إلى:</p>
-    <div style="font-size:22px; font-weight:bold; color:var(--accent); direction:ltr; margin-bottom:16px;" id="modal-sham-cash">...</div>
+    <h3 style="margin-bottom:12px; color:var(--primary);">الدفع عبر شام كاش</h3>
+    <p style="font-size:14px; color:var(--text-muted); margin-bottom:16px;">حول المبلغ إلى:</p>
+    <div style="font-size:24px; font-weight:bold; color:var(--primary); direction:ltr; margin-bottom:16px;" id="modal-sham-cash">...</div>
     <input type="text" id="tx-id-input" placeholder="أدخل رقم عملية التحويل" style="margin-bottom:16px;">
     <button class="btn btn-primary" onclick="submitPayment()" style="margin-bottom:8px;">تأكيد وإرسال</button>
     <button class="btn btn-outline" onclick="document.getElementById('payment-modal').classList.add('hidden')">إلغاء</button>
@@ -259,46 +278,50 @@
 <div id="admin-settings-modal" class="modal hidden">
   <div class="admin-modal-content">
     <h3 style="margin-bottom:16px;">⚙️ إعدادات المنصة</h3>
-    <label style="font-size:12px; color:var(--admin-muted);">رقم شام كاش:</label>
+    <label style="font-size:12px; color:#94A3B8;">رقم شام كاش:</label>
     <input type="text" id="setting-sham-cash" dir="ltr">
-    <label style="font-size:12px; color:var(--admin-muted);">سعر الباقة (ل.س):</label>
+    <label style="font-size:12px; color:#94A3B8;">سعر الباقة (ل.س):</label>
     <input type="number" id="setting-price">
-    <label style="font-size:12px; color:var(--admin-muted);">مفتاح Gemini API:</label>
+    <label style="font-size:12px; color:#94A3B8;">مفتاح Gemini API:</label>
     <input type="password" id="setting-api-key" dir="ltr" placeholder="AIzaSy...">
     <div style="display:flex; gap:8px; margin-top:12px;">
       <button class="btn btn-primary" onclick="saveAdminSettings()">حفظ</button>
-      <button class="btn btn-outline" style="color:white; border-color:var(--admin-border);" onclick="document.getElementById('admin-settings-modal').classList.add('hidden')">إلغاء</button>
+      <button class="btn btn-outline" style="color:white; border-color:#475569;" onclick="document.getElementById('admin-settings-modal').classList.add('hidden')">إلغاء</button>
     </div>
   </div>
 </div>
 
-<!-- سكربتات Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
 <script>
-/* ================= 1. إعدادات Firebase ================= */
-const firebaseConfig = {
-  apiKey: "AIzaSyDVcPsnEBsH_WNtFvRKagNuGVwd4fPftuY",
-  authDomain: "bahia-7976d.firebaseapp.com",
-  projectId: "bahia-7976d",
-  storageBucket: "bahia-7976d.firebasestorage.app",
-  messagingSenderId: "949538123612",
-  appId: "1:949538123612:web:959cc1c01b9fc6922c9b99"
-};
+/* ================= 1. إدارة البيانات (localStorage) ================= */
+// هذا الكود يعمل بدون إنترنت وبدون Firebase، يحفظ البيانات في هاتفك فوراً!
+const DB_KEY = 'albahith_blue_v1';
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+function getDB() {
+  let data = localStorage.getItem(DB_KEY);
+  if (!data) {
+    // إنشاء قاعدة بيانات افتراضية مع حساب مدير جاهز
+    const initialData = {
+      users: [
+        { id: 'admin_1', name: 'المدير', email: 'admin@albahith.com', password: '123456', role: 'admin', status: 'active', txId: null, dailyCount: 0, lastChatDate: '' }
+      ],
+      chats: [],
+      settings: { shamCash: '0912345678', price: 1000, apiKey: '' }
+    };
+    localStorage.setItem(DB_KEY, JSON.stringify(initialData));
+    return initialData;
+  }
+  return JSON.parse(data);
+}
 
-/* ================= 2. الحالة العامة ================= */
+function saveDB(data) {
+  localStorage.setItem(DB_KEY, JSON.stringify(data));
+}
+
 let currentUser = null;
 let currentChatId = null;
-let appSettings = { shamCash: '0912345678', price: 1000, apiKey: '' };
-let isLoginMode = true;
+let appSettings = getDB().settings;
 
-/* ================= أدوات مساعدة ================= */
+/* ================= 2. أدوات مساعدة ================= */
 function toast(msg) {
   const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
   document.getElementById('toast-container').appendChild(t);
@@ -308,122 +331,75 @@ function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('open');
   document.getElementById('backdrop').classList.toggle('show');
 }
-async function getSettings() {
-  try {
-    const doc = await db.collection('settings').doc('app').get();
-    if (doc.exists) appSettings = doc.data();
-    else await db.collection('settings').doc('app').set(appSettings);
-  } catch (e) {}
-}
 
-/* ================= 3. تهيئة النظام ================= */
-async function autoSetupAdmin() {
-  const btn = document.getElementById('setup-btn-text');
-  btn.textContent = 'جاري التهيئة...';
-  try {
-    try {
-      const cred = await auth.signInWithEmailAndPassword('admin@albahith.com', '123456');
-      await db.collection('users').doc(cred.user.uid).set({
-        name: 'المدير', email: 'admin@albahith.com', role: 'admin', status: 'active'
-      }, { merge: true });
-      toast('تم تسجيل الدخول كمدير بنجاح!');
-    } catch (error) {
-      if (error.code === 'auth/user-not-found') {
-        const cred = await auth.createUserWithEmailAndPassword('admin@albahith.com', '123456');
-        await db.collection('users').doc(cred.user.uid).set({
-          name: 'المدير', email: 'admin@albahith.com', role: 'admin', status: 'active'
-        });
-        toast('تم إنشاء حساب المدير وتفعيله تلقائياً!');
-      } else { throw error; }
-    }
-  } catch (error) {
-    toast('حدث خطأ: ' + error.message);
-    btn.textContent = '⚙️ تهيئة النظام (إنشاء حساب مدير)';
-  }
-}
-
-/* ================= 4. المصادقة ================= */
+/* ================= 3. المصادقة (دخول/تسجيل) ================= */
+let isLoginMode = true;
 document.getElementById('auth-toggle-btn').addEventListener('click', () => {
   isLoginMode = !isLoginMode;
   document.getElementById('auth-title').textContent = isLoginMode ? 'مرحباً بك' : 'إنشاء حساب';
+  document.getElementById('auth-subtitle').textContent = isLoginMode ? 'سجل دخولك للمتابعة' : 'أنشئ حسابك الجديد';
   document.getElementById('name-group').classList.toggle('hidden', isLoginMode);
   document.getElementById('auth-submit-btn').textContent = isLoginMode ? 'دخول' : 'تسجيل';
   document.getElementById('auth-toggle-text').textContent = isLoginMode ? 'ليس لديك حساب؟' : 'لديك حساب؟';
   document.getElementById('auth-toggle-btn').textContent = isLoginMode ? 'سجل الآن' : 'دخول';
 });
 
-document.getElementById('auth-form').addEventListener('submit', async (e) => {
+document.getElementById('auth-form').addEventListener('submit', (e) => {
   e.preventDefault();
-  const email = document.getElementById('auth-email').value;
-  const pass = document.getElementById('auth-password').value;
-  const name = document.getElementById('auth-name').value;
-  const btn = document.getElementById('auth-submit-btn');
-  
-  btn.disabled = true; btn.textContent = 'جاري المعالجة...';
-  try {
-    if (isLoginMode) {
-      await auth.signInWithEmailAndPassword(email, pass);
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-password').value.trim();
+  const name = document.getElementById('auth-name').value.trim();
+  const db = getDB();
+
+  if (isLoginMode) {
+    const user = db.users.find(u => u.email === email && u.password === pass);
+    if (user) {
+      currentUser = user;
+      loginSuccess();
     } else {
-      if(!name) throw new Error("أدخل الاسم");
-      const cred = await auth.createUserWithEmailAndPassword(email, pass);
-      const today = new Date().toISOString().split('T')[0];
-      await db.collection('users').doc(cred.user.uid).set({
-        name: name, email: email, role: 'user', status: 'inactive', txId: null, dailyCount: 0, lastChatDate: today
-      });
-    }
-  } catch (error) {
-    toast(error.message === 'Firebase: Error (auth/invalid-credential).' ? 'الإيميل أو الباسورد خطأ' : error.message);
-  } finally {
-    btn.disabled = false; btn.textContent = isLoginMode ? 'دخول' : 'تسجيل';
-  }
-});
-
-function logout() {
-  auth.signOut().then(() => {
-    document.getElementById('auth-form').reset();
-    document.getElementById('view-chat').classList.add('hidden');
-    document.getElementById('view-admin').classList.add('hidden');
-    document.getElementById('view-auth').classList.remove('hidden');
-  });
-}
-
-auth.onAuthStateChanged(async (user) => {
-  if (user) {
-    const doc = await db.collection('users').doc(user.uid).get();
-    if (doc.exists) {
-      currentUser = { uid: user.uid, ...doc.data() };
-      await getSettings();
-      
-      if (currentUser.role === 'admin') {
-        document.getElementById('admin-nav-btn').style.display = 'flex';
-        document.getElementById('view-admin').classList.remove('hidden');
-        document.getElementById('view-chat').classList.add('hidden');
-        initAdminDashboard();
-      } else {
-        document.getElementById('admin-nav-btn').style.display = 'none';
-        document.getElementById('view-chat').classList.remove('hidden');
-        document.getElementById('view-admin').classList.add('hidden');
-        loadChats();
-        updateUserStatusUI();
-      }
+      toast('البريد أو كلمة المرور غير صحيحة');
     }
   } else {
-    currentUser = null;
-    document.getElementById('view-admin').classList.add('hidden');
-    document.getElementById('view-chat').classList.add('hidden');
-    document.getElementById('view-auth').classList.remove('hidden');
+    if(!name) return toast('أدخل اسمك');
+    if (db.users.find(u => u.email === email)) return toast('البريد مسجل مسبقاً');
+    
+    const today = new Date().toISOString().split('T')[0];
+    const newUser = { 
+      id: Date.now().toString(), name, email, password: pass, 
+      role: 'user', status: 'inactive', txId: null, dailyCount: 0, lastChatDate: today 
+    };
+    db.users.push(newUser);
+    saveDB(db);
+    currentUser = newUser;
+    loginSuccess();
   }
 });
+
+function loginSuccess() {
+  document.getElementById('view-auth').classList.add('hidden');
+  document.getElementById('auth-form').reset();
+  
+  if (currentUser.role === 'admin') {
+    document.getElementById('admin-nav-btn').style.display = 'flex';
+    openAdminPanel();
+  } else {
+    document.getElementById('admin-nav-btn').style.display = 'none';
+    openUserView();
+    updateUserStatusUI();
+  }
+}
+
+function logout() {
+  currentUser = null;
+  document.getElementById('view-chat').classList.add('hidden');
+  document.getElementById('view-admin').classList.add('hidden');
+  document.getElementById('view-auth').classList.remove('hidden');
+}
 
 function openUserView() {
   document.getElementById('view-admin').classList.add('hidden');
   document.getElementById('view-chat').classList.remove('hidden');
   loadChats();
-}
-function openAdminPanel() {
-  document.getElementById('view-chat').classList.add('hidden');
-  document.getElementById('view-admin').classList.remove('hidden');
-  initAdminDashboard();
 }
 
 function updateUserStatusUI() {
@@ -433,32 +409,31 @@ function updateUserStatusUI() {
   else el.innerHTML = `<span style="color:#EF4444;">غير مفعل</span>`;
 }
 
-/* ================= 5. المحادثة والحد اليومي ================= */
-async function loadChats() {
+/* ================= 4. المحادثة والحد اليومي ================= */
+function loadChats() {
   if(!currentUser) return;
+  const db = getDB();
+  const userChats = db.chats.filter(c => c.userId === currentUser.id).sort((a, b) => b.updatedAt - a.updatedAt);
   const chatList = document.getElementById('chat-history-list');
-  const snapshot = await db.collection('chats').where('userId', '==', currentUser.uid).orderBy('updatedAt', 'desc').get();
   
   chatList.innerHTML = '';
-  if(snapshot.empty) {
-    document.getElementById('chat-messages').innerHTML = `<div style="text-align:center; margin-top:30vh; color:var(--muted);"><h2>كيف يمكنني مساعدتك؟</h2></div>`;
+  if(userChats.length === 0) {
+    document.getElementById('chat-messages').innerHTML = `<div style="text-align:center; margin-top:30vh; color:var(--text-muted);"><h2>كيف يمكنني مساعدتك؟</h2></div>`;
     document.getElementById('chat-title-display').textContent = 'محادثة جديدة';
     return;
   }
   
-  snapshot.forEach(doc => {
-    const chat = doc.data();
+  userChats.forEach(chat => {
     const div = document.createElement('div');
-    div.className = `history-item ${doc.id === currentChatId ? 'active' : ''}`;
+    div.className = `history-item ${chat.id === currentChatId ? 'active' : ''}`;
     div.textContent = chat.title || 'محادثة';
-    div.onclick = () => { currentChatId = doc.id; renderChat(chat); toggleSidebar(); };
+    div.onclick = () => { currentChatId = chat.id; renderChat(chat); toggleSidebar(); };
     chatList.appendChild(div);
   });
   
   if(!currentChatId) {
-    const latest = snapshot.docs[0];
-    currentChatId = latest.id;
-    renderChat(latest.data());
+    currentChatId = userChats[0].id;
+    renderChat(userChats[0]);
   }
 }
 
@@ -468,7 +443,7 @@ function renderChat(chat) {
   if (!chat.messages) return;
   msgs.innerHTML = chat.messages.map(m => `
     <div class="msg ${m.role}">
-      <div class="msg-avatar">${m.role === 'user' ? 'أ' : '✽'}</div>
+      <div class="msg-avatar">${m.role === 'user' ? '👤' : '🔍'}</div>
       <div class="msg-content ${m.role === 'assistant' ? 'markdown-body' : ''}">${m.role === 'assistant' ? marked.parse(m.text) : m.text}</div>
     </div>
   `).join('');
@@ -477,7 +452,7 @@ function renderChat(chat) {
 
 function startNewChat() {
   currentChatId = null;
-  document.getElementById('chat-messages').innerHTML = `<div style="text-align:center; margin-top:30vh; color:var(--muted);"><h2>كيف يمكنني مساعدتك؟</h2></div>`;
+  document.getElementById('chat-messages').innerHTML = `<div style="text-align:center; margin-top:30vh; color:var(--text-muted);"><h2>كيف يمكنني مساعدتك؟</h2></div>`;
   document.getElementById('chat-title-display').textContent = 'محادثة جديدة';
   document.getElementById('chat-input').focus();
   toggleSidebar();
@@ -492,30 +467,31 @@ document.getElementById('send-btn').addEventListener('click', async () => {
     return toast('حسابك بحاجة لتفعيل. يرجى الاشتراك أولاً.');
   }
 
+  // تطبيق الحد اليومي (5 رسائل)
   const today = new Date().toISOString().split('T')[0];
   if (currentUser.role !== 'admin') {
-    if (currentUser.lastChatDate !== today) {
-      currentUser.dailyCount = 0;
-      currentUser.lastChatDate = today;
-      await db.collection('users').doc(currentUser.uid).update({ dailyCount: 0, lastChatDate: today });
+    let db = getDB();
+    let userIdx = db.users.findIndex(u => u.id === currentUser.id);
+    
+    if (db.users[userIdx].lastChatDate !== today) {
+      db.users[userIdx].dailyCount = 0;
+      db.users[userIdx].lastChatDate = today;
     }
-    if (currentUser.dailyCount >= 5) {
+    if (db.users[userIdx].dailyCount >= 5) {
       return toast('لقد استنفدت 5 رسائل مجانية اليوم. يرجى الاشتراك للمتابعة.');
     }
+    db.users[userIdx].dailyCount++;
+    currentUser = db.users[userIdx];
+    saveDB(db);
   }
 
   input.value = ''; input.style.height = 'auto';
   const msgs = document.getElementById('chat-messages');
-  msgs.innerHTML += `<div class="msg user"><div class="msg-avatar">أ</div><div class="msg-content">${text}</div></div>`;
-  msgs.innerHTML += `<div class="msg assistant" id="typing"><div class="msg-avatar">✽</div><div class="msg-content">جاري الكتابة...</div></div>`;
+  msgs.innerHTML += `<div class="msg user"><div class="msg-avatar">👤</div><div class="msg-content">${text}</div></div>`;
+  msgs.innerHTML += `<div class="msg assistant" id="typing"><div class="msg-avatar">🔍</div><div class="msg-content">جاري البحث...</div></div>`;
   msgs.scrollTop = msgs.scrollHeight;
 
-  if (currentUser.role !== 'admin') {
-    await db.collection('users').doc(currentUser.uid).update({ dailyCount: firebase.firestore.FieldValue.increment(1) });
-    currentUser.dailyCount++;
-  }
-
-  let reply = 'يرجى تفعيل مفتاح API من لوحة الإدارة.';
+  let reply = 'يرجى تفعيل مفتاح API من لوحة الإدارة لكي أستطيع الرد.';
   if (appSettings.apiKey) {
     try {
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${appSettings.apiKey}`, {
@@ -528,20 +504,23 @@ document.getElementById('send-btn').addEventListener('click', async () => {
   }
 
   document.getElementById('typing').remove();
-  msgs.innerHTML += `<div class="msg assistant"><div class="msg-avatar">✽</div><div class="msg-content markdown-body">${marked.parse(reply)}</div></div>`;
+  msgs.innerHTML += `<div class="msg assistant"><div class="msg-avatar">🔍</div><div class="msg-content markdown-body">${marked.parse(reply)}</div></div>`;
   msgs.scrollTop = msgs.scrollHeight;
 
-  const chatData = { userId: currentUser.uid, title: text.substring(0, 25), updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+  // حفظ في قاعدة البيانات المحلية
+  const db = getDB();
   if (!currentChatId) {
-    chatData.messages = [{ role: 'user', text }, { role: 'assistant', text: reply }];
-    const docRef = await db.collection('chats').add(chatData);
-    currentChatId = docRef.id;
-  } else {
-    await db.collection('chats').doc(currentChatId).update({
-      messages: firebase.firestore.FieldValue.arrayUnion({ role: 'user', text }, { role: 'assistant', text: reply }),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    currentChatId = Date.now().toString();
+    db.chats.push({
+      id: currentChatId, userId: currentUser.id, title: text.substring(0, 25), updatedAt: Date.now(),
+      messages: [{ role: 'user', text }, { role: 'assistant', text: reply }]
     });
+  } else {
+    const chatIdx = db.chats.findIndex(c => c.id === currentChatId);
+    db.chats[chatIdx].messages.push({ role: 'user', text }, { role: 'assistant', text: reply });
+    db.chats[chatIdx].updatedAt = Date.now();
   }
+  saveDB(db);
   loadChats();
 });
 
@@ -550,7 +529,13 @@ document.getElementById('chat-input').addEventListener('input', function() {
   this.style.height = (this.scrollHeight) + 'px';
 });
 
-/* ================= 6. لوحة الإدارة ================= */
+/* ================= 5. لوحة الإدارة ================= */
+function openAdminPanel() {
+  document.getElementById('view-chat').classList.add('hidden');
+  document.getElementById('view-admin').classList.remove('hidden');
+  initAdminDashboard();
+}
+
 function switchAdminTab(tab, btn) {
   document.querySelectorAll('.btn-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -570,47 +555,36 @@ function initAdminDashboard() {
   loadDashboardStats();
 }
 
-let revenueChartInstance = null;
-async function loadDashboardStats() {
-  const snapshot = await db.collection('users').where('role', '==', 'user').get();
-  let activeCount = 0, totalRevenue = 0;
-  snapshot.forEach(doc => {
-    if (doc.data().status === 'active') { activeCount++; totalRevenue += Number(appSettings.price); }
+function loadDashboardStats() {
+  const db = getDB();
+  const users = db.users.filter(u => u.role === 'user');
+  let activeCount = 0;
+  
+  users.forEach(u => {
+    if (u.status === 'active') activeCount++;
   });
 
-  document.getElementById('kpi-total').textContent = snapshot.size;
+  document.getElementById('kpi-total').textContent = users.length;
   document.getElementById('kpi-active').textContent = activeCount;
-  document.getElementById('kpi-revenue').textContent = totalRevenue.toLocaleString();
-
-  if (revenueChartInstance) revenueChartInstance.destroy();
-  const ctx = document.getElementById('revenueChart').getContext('2d');
-  Chart.defaults.color = '#94A3B8';
-  revenueChartInstance = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['المشتركين', 'الطلبات'],
-      datasets: [{ data: [activeCount, snapshot.size - activeCount], backgroundColor: ['#10B981', '#F59E0B'], borderRadius: 6 }]
-    },
-    options: { responsive: true, plugins: { legend: { display: false } } }
-  });
+  document.getElementById('kpi-revenue').textContent = (activeCount * Number(appSettings.price)).toLocaleString();
 }
 
-async function loadAdminTable() {
+function loadAdminTable() {
   const search = document.getElementById('admin-search').value.toLowerCase();
   const tbody = document.getElementById('admin-table-body');
-  const snapshot = await db.collection('users').where('role', '==', 'user').get();
+  const db = getDB();
+  const users = db.users.filter(u => u.role === 'user');
   
   let html = '';
-  snapshot.forEach(doc => {
-    const u = { id: doc.id, ...doc.data() };
+  users.forEach(u => {
     if(search && !u.name.toLowerCase().includes(search) && !u.email.toLowerCase().includes(search)) return;
 
     let badge = u.status === 'active' ? '<span class="status-badge status-active">نشط</span>' : 
                 u.status === 'pending' ? '<span class="status-badge status-pending">قيد المراجعة</span>' : 
-                '<span class="status-badge" style="background:#475569; color:#94A3B8;">غير مشترك</span>';
+                '<span class="status-badge status-inactive">غير مشترك</span>';
 
     let actions = u.status === 'pending' ? `
-      <button class="btn btn-success" style="padding:4px 8px; font-size:11px;" onclick="approveUser('${u.id}')">تفعيل</button>
+      <button class="btn" style="background:var(--success); color:white; padding:4px 8px; font-size:11px; width:auto;" onclick="approveUser('${u.id}')">تفعيل</button>
     ` : '';
 
     html += `<tr><td>${u.name}</td><td dir="ltr">${u.email}</td><td dir="ltr">${u.txId || '-'}</td><td>${badge}</td><td>${actions}</td></tr>`;
@@ -618,10 +592,17 @@ async function loadAdminTable() {
   tbody.innerHTML = html || '<tr><td colspan="5" style="text-align:center;">لا يوجد نتائج</td></tr>';
 }
 
-window.approveUser = async (id) => {
-  await db.collection('users').doc(id).update({ status: 'active' });
-  toast('تم تفعيل الحساب'); loadAdminTable(); loadDashboardStats();
-};
+function approveUser(id) {
+  const db = getDB();
+  const idx = db.users.findIndex(u => u.id === id);
+  if (idx > -1) {
+    db.users[idx].status = 'active';
+    saveDB(db);
+    loadAdminTable();
+    loadDashboardStats();
+    toast('تم تفعيل المستخدم');
+  }
+}
 
 function openAdminSettings() {
   document.getElementById('setting-sham-cash').value = appSettings.shamCash;
@@ -630,27 +611,35 @@ function openAdminSettings() {
   document.getElementById('admin-settings-modal').classList.remove('hidden');
 }
 
-async function saveAdminSettings() {
+function saveAdminSettings() {
+  const db = getDB();
   appSettings.shamCash = document.getElementById('setting-sham-cash').value;
   appSettings.price = document.getElementById('setting-price').value;
   appSettings.apiKey = document.getElementById('setting-api-key').value;
-  await db.collection('settings').doc('app').set(appSettings);
+  db.settings = appSettings;
+  saveDB(db);
   document.getElementById('admin-settings-modal').classList.add('hidden');
   toast('تم حفظ الإعدادات');
 }
 
-/* ================= 7. الدفع ================= */
+/* ================= 6. الدفع ================= */
 function openPricing() {
   document.getElementById('modal-sham-cash').textContent = appSettings.shamCash;
   document.getElementById('payment-modal').classList.remove('hidden');
   toggleSidebar();
 }
 
-async function submitPayment() {
+function submitPayment() {
   const txId = document.getElementById('tx-id-input').value.trim();
   if (!txId) return toast('أدخل رقم العملية');
-  await db.collection('users').doc(currentUser.uid).update({ status: 'pending', txId: txId });
-  currentUser.status = 'pending';
+  
+  const db = getDB();
+  const idx = db.users.findIndex(u => u.id === currentUser.id);
+  db.users[idx].status = 'pending';
+  db.users[idx].txId = txId;
+  currentUser = db.users[idx];
+  saveDB(db);
+  
   document.getElementById('payment-modal').classList.add('hidden');
   updateUserStatusUI();
   toast('تم إرسال الطلب، بانتظار موافقة الإدارة');
