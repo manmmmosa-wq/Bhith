@@ -257,11 +257,7 @@
     <label>سعر الباقة (ل.س):</label>
     <input type="number" id="setting-price">
     
-    <label>مفتاح Groq API (مجاني):</label>
-    <input type="password" id="setting-api-key" dir="ltr" placeholder="gsk_...">
-    
-    <label>النموذج:</label>
-    <input type="text" id="setting-model" dir="ltr" placeholder="llama-3.3-70b-versatile">
+    <p style="font-size:13px; color:#94A3B8; margin-bottom:16px; line-height:1.5;">الوضع الحالي: <b style="color:#34D399;">محلي</b> — الردود تعمل بدون إنترنت وبدون مفتاح API.</p>
     
     <div class="modal-buttons">
       <button class="btn btn-primary" onclick="saveAdminSettings()">حفظ</button>
@@ -271,7 +267,7 @@
 </div>
 
 <script>
-const DB_KEY = 'albahith_blue_v3';
+const DB_KEY = 'albahith_local_v1';
 
 function getDB() {
   let data = localStorage.getItem(DB_KEY);
@@ -281,7 +277,7 @@ function getDB() {
         { id: 'admin_1', name: 'المدير', email: 'admin@albahith.com', password: '123456', role: 'admin', status: 'active', txId: null, dailyCount: 0, lastChatDate: '' }
       ],
       chats: [],
-      settings: { shamCash: '0912345678', price: 1000, apiKey: '', model: 'llama-3.3-70b-versatile' }
+      settings: { shamCash: '0912345678', price: 1000 }
     };
     localStorage.setItem(DB_KEY, JSON.stringify(initialData));
     return initialData;
@@ -467,41 +463,9 @@ document.getElementById('send-btn').addEventListener('click', async () => {
   msgs.innerHTML += `<div class="msg assistant" id="typing"><div class="msg-avatar">🔍</div><div class="msg-content">جاري البحث...</div></div>`;
   msgs.scrollTop = msgs.scrollHeight;
 
-  let reply = 'يرجى تفعيل مفتاح Groq API من إعدادات الإدارة.';
-  if (appSettings.apiKey) {
-    try {
-      const model = appSettings.model || 'llama-3.3-70b-versatile';
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${appSettings.apiKey}`
-        },
-        body: JSON.stringify({
-          model,
-          messages: [
-            {
-              role: 'system',
-              content: 'أنت الباحث، مساعد ذكاء اصطناعي عربي مفيد ودقيق. أجب بالعربية الفصحى الواضحة ما لم يطلب المستخدم لغة أخرى. كن مختصراً ومفيداً.'
-            },
-            { role: 'user', content: text }
-          ],
-          temperature: 0.7,
-          max_tokens: 2048
-        })
-      });
-      const json = await res.json();
-      if (json.choices && json.choices[0] && json.choices[0].message) {
-        reply = json.choices[0].message.content;
-      } else if (json.error) {
-        reply = 'خطأ من Groq: ' + (json.error.message || JSON.stringify(json.error));
-      } else {
-        reply = 'خطأ في الرد من الذكاء الاصطناعي. تأكد من صحة المفتاح والنموذج.';
-      }
-    } catch (e) {
-      reply = 'حدث خطأ في الاتصال. تحقق من الإنترنت أو جرّب لاحقاً.';
-    }
-  }
+  // محاكاة تأخير بسيط ثم رد محلي
+  await new Promise(r => setTimeout(r, 400 + Math.random() * 600));
+  const reply = localReply(text);
 
   document.getElementById('typing').remove();
   msgs.innerHTML += `<div class="msg assistant"><div class="msg-avatar">🔍</div><div class="msg-content markdown-body">${marked.parse(reply)}</div></div>`;
@@ -606,8 +570,6 @@ function approveUser(id) {
 function openAdminSettings() {
   document.getElementById('setting-sham-cash').value = appSettings.shamCash;
   document.getElementById('setting-price').value = appSettings.price;
-  document.getElementById('setting-api-key').value = appSettings.apiKey || '';
-  document.getElementById('setting-model').value = appSettings.model || 'llama-3.3-70b-versatile';
   document.getElementById('admin-settings-modal').classList.remove('hidden');
 }
 
@@ -615,12 +577,62 @@ function saveAdminSettings() {
   const db = getDB();
   appSettings.shamCash = document.getElementById('setting-sham-cash').value;
   appSettings.price = document.getElementById('setting-price').value;
-  appSettings.apiKey = document.getElementById('setting-api-key').value;
-  appSettings.model = document.getElementById('setting-model').value.trim() || 'llama-3.3-70b-versatile';
   db.settings = appSettings;
   saveDB(db);
   document.getElementById('admin-settings-modal').classList.add('hidden');
   toast('تم حفظ الإعدادات بنجاح');
+}
+
+/** ردود محلية بدون أي API خارجي */
+function localReply(text) {
+  const t = (text || '').trim().toLowerCase();
+
+  if (/^(مرحبا|أهلا|السلام|هلا|hi|hello)/.test(t)) {
+    return 'مرحباً بك في **الباحث** 🔍\n\nأنا مساعدك المحلي. اسألني عن:\n- معلومات عامة\n- شرح مفاهيم\n- نصائح دراسية أو تقنية\n- أو أي سؤال تريد مناقشته';
+  }
+  if (/من أنت|ما اسمك|تعريف/.test(t)) {
+    return 'أنا **الباحث**، مساعد يعمل محلياً داخل المتصفح بدون اتصال بخوادم خارجية. مناسب للاستخدام من سوريا دون الحاجة لـ VPN أو مفاتيح API.';
+  }
+  if (/سوريا|دمشق|حلب|اللاذقية|حمص|حماة/.test(t)) {
+    return 'سوريا بلد عربي عريق في بلاد الشام. إذا كان سؤالك عن مدينة أو موضوع محدد داخل سوريا، وضّح أكثر لأجيب بشكل أدق ضمن المعلومات العامة المتوفرة محلياً.';
+  }
+  if (/شام كاش|دفع|اشتراك|سعر|باقة/.test(t)) {
+    return 'للاشتراك في المنصة:\n1. من القائمة اختر **باقة الاشتراك**\n2. حوّل المبلغ عبر **شام كاش**\n3. أدخل رقم العملية\n4. بانتظار موافقة الإدارة يتم تفعيل حسابك';
+  }
+  if (/برمجة|كود|javascript|html|python|جافا/.test(t)) {
+    return 'يمكنني مساعدتك في مفاهيم البرمجة بشكل عام.\n\n**نصيحة سريعة:** ابدأ بتقسيم المشكلة إلى خطوات صغيرة، ثم اكتب الكود خطوة بخطوة واختبره.\n\nاكتب سؤالك البرمجي بالتفصيل (اللغة + ما الذي تريد إنجازه) لأعطيك توجيهاً أوضح.';
+  }
+  if (/رياضيات|حساب|معادلة|\d+\s*[\+\-\*\/×÷]\s*\d+/.test(t)) {
+    const m = t.match(/(\d+(?:\.\d+)?)\s*([\+\-\*\/×÷])\s*(\d+(?:\.\d+)?)/);
+    if (m) {
+      const a = parseFloat(m[1]), b = parseFloat(m[3]);
+      let r;
+      if (m[2] === '+' ) r = a + b;
+      else if (m[2] === '-') r = a - b;
+      else if (m[2] === '*' || m[2] === '×') r = a * b;
+      else if ((m[2] === '/' || m[2] === '÷') && b !== 0) r = a / b;
+      else return 'تعذر إجراء العملية (تحقق من القسمة على صفر).';
+      return `النتيجة: **${r}**`;
+    }
+    return 'اكتب العملية الحسابية بوضوح، مثال: `25 + 17` أو `100 / 4`.';
+  }
+  if (/طقس|درجة الحرارة/.test(t)) {
+    return 'الوضع المحلي لا يتصل بمصادر الطقس الحية. راجع تطبيقاً محلياً للطقس أو موقعاً موثوقاً للحصول على التوقعات الحالية.';
+  }
+  if (/وقت|ساعة|تاريخ|اليوم/.test(t)) {
+    const now = new Date();
+    return `الوقت الحالي على جهازك:\n**${now.toLocaleString('ar-SY')}**`;
+  }
+  if (/شكرا|مشكور|تسلم/.test(t)) {
+    return 'العفو! إذا احتجت أي شيء آخر أنا هنا.';
+  }
+  if (/مساعدة|help|ماذا تستطيع|اقدر/.test(t)) {
+    return 'أستطيع في الوضع المحلي:\n- الرد على التحية والأسئلة العامة\n- شرح بسيط لمفاهيم\n- عمليات حسابية بسيطة\n- توجيه حول الاشتراك والدفع\n\nللذكاء الاصطناعي الكامل تحتاج لاحقاً ربط API يعمل من منطقتك أو عبر خادم خاص.';
+  }
+
+  // رد عام يكرر فهم السؤال
+  const short = text.length > 80 ? text.slice(0, 80) + '…' : text;
+  return `فهمت سؤالك: «${short}»\n\n**ملاحظة:** التطبيق يعمل حالياً بالوضع **المحلي** (بدون نماذج سحابية)، لذلك إجاباتي محدودة بالمعلومات المدمجة.\n\nجرّب إعادة صياغة السؤال بشكل أوضح، أو اسأل عن:\n- شرح مفهوم\n- حساب رياضي\n- نصيحة عامة\n- طريقة الاشتراك في المنصة`;
 }
 
 // الدفع
